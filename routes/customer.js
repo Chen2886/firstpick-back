@@ -8,9 +8,6 @@ router.use(function timeLog(req, res, next) {
 });
 router.use(express.json());
 router.use(express.urlencoded());
-// app.use(express.urlencoded({
-//   extended: true
-// }));
 
 router.get("/customers", (req, response) => {
     sql =
@@ -53,6 +50,5 @@ router.post("/customers", (req, response) => {
         }
     });
 });
-
 
 module.exports = router;
