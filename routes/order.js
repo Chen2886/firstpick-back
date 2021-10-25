@@ -9,9 +9,12 @@ router.use(function timeLog(req, res, next) {
 
 router.get("/orders", (req, response) => {
   sql =
-    "SELECT * FROM `Order`, `Order_Customer`, `Customer` \
-  WHERE `Order`.Order_ID = `Order_Customer`.Order_ID \
-  AND `Order_Customer`.Customer_ID = `Customer`.Customer_ID";
+    "SELECT  o.Order_ID, o.Date, c.First_Name, c.Last_Name, r.Name, r.Price\
+  FROM `Order` o, `Order_Customer` oc, `Customer` c, `Recipe` r \
+  WHERE o.Order_ID = oc.Order_ID \
+  AND oc.Customer_ID = c.Customer_ID \
+  AND o.Recipe_ID = r.Recipe_ID\
+  ";
 
   con.query(sql.replace("\n", " "), (err, res) => {
     if (err) {
