@@ -1,3 +1,4 @@
 /node_modules/
 .env
 probable-willow-330020-367130929757.json
+.DS_Store
