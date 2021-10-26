@@ -1,11 +1,11 @@
 // import
 const express = require("express"); //Import the express dependency
 const sqlConnection = require("./sqlConnection");
-var cors = require('cors');
+var cors = require("cors");
 const port = 5000; // localhost port
 
 const app = express(); //Instantiate an express app, the main work horse of this server
-app.use(cors())
+app.use(cors());
 // import order.js
 app.use(require("./routes/order"));
 
