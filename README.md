@@ -10,4 +10,4 @@ You can open your tableplus project at this point.
 ## Running the client
 
 Open a new terminal window. Go inside your firstpick_back folder and run the command **index node.js** to connect this project, a client, to the proxy server. This window should say: **Now listening on port 5000**,
-and the window we used to connect to the server should say: **New connection for "probable-willow-330020:us-central1:cs-348"**
+and the window we used to connect to the server should say: **New connection for "probable-willow-330020:us-central1:cs-348"**. Yay now you can get to work!
