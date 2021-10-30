@@ -66,9 +66,18 @@ router.get("/orders", (req, response) => {
     } else {
       resData.Current = res;
       response.send(resData);
-      console.log(resData);
     }
   });
+});
+
+router.delete("/orders", (req, response) => {
+  var sql = "DELETE FROM `Order_Customer` WHERE Order_ID=?";
+  con.query(sql, [req.body.Order_ID]);
+
+  var sql = "DELETE FROM `Order` WHERE Order_ID=?";
+  con.query(sql, [req.body.Order_ID], (err, res) =>
+    sendPacket(err, res, response)
+  );
 });
 
 router.post("/complete", (req, response) => {
@@ -92,7 +101,6 @@ sendPacket = (err, res, response) => {
     response.status(400);
     response.send(err);
   } else {
-    console.log(res);
     response.send(res);
   }
 };
