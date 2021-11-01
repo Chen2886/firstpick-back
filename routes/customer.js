@@ -52,4 +52,10 @@ router.post("/customers", (req, response) => {
     });
 });
 
+router.delete("/customers", (req, response) => {
+    var sql = "DELETE FROM `Customer` WHERE First_Name=? AND Last_Name=?";
+    con.query(sql, [req.body.First_Name, req.body.Last_Name]);
+    response.send("check status code")
+  });
+
 module.exports = router;
