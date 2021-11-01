@@ -44,7 +44,8 @@ router.post("/customers", (req, response) => {
 
     con.query(sql, function (err, result) {
         if (err) {
-            response.send("An error occurred you did bad");
+            response.statusCode = 400
+            response.send("An error occurred you did bad: " + err);
         } else {
             response.send("Hooray successfully inserted into DB you're a genius");
         }
