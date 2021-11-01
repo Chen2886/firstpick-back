@@ -8,6 +8,8 @@ const app = express(); //Instantiate an express app, the main work horse of this
 app.use(cors())
 // import order.js
 app.use(require("./routes/order"));
+// import customer.js
+app.use(require("./routes/customer"));
 
 app.listen(port, () => {
   //server starts listening for any attempts from a client to connect at port: {port}
