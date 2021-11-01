@@ -8,7 +8,7 @@ app.use(cors());
 // import order.js
 app.use(require("./routes/order"));
 
-app.listen(port, () => {
+app.listen(process.env.DB_PORT, () => {
   //server starts listening for any attempts from a client to connect at port: {port}
   console.log(`Now listening on port ${process.env.DB_PORT}`);
 });
