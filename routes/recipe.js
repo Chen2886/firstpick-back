@@ -7,12 +7,12 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
-router.get("/recipes", (req, response) => {
-    sql =
-      "SELECT * FROM `Recipe` JOIN `Recipe_Ingredient` \
-    ON `Recipe`.Recipe_ID = `Recipe_Ingredient`.Recipe_ID"; 
-    
-  
+router.get("/recipe", (req, response) => {
+
+      var sql =
+      "SELECT B.Name, B.Price, B.Recipe_ID \
+      FROM Recipe B"; 
+     
     con.query(sql.replace("\n", " "), (err, res) => {
       if (err) {
         response.status(400);
@@ -23,9 +23,19 @@ router.get("/recipes", (req, response) => {
     });
   });
 
+
+  router.get("/ingredient", (req, response) => {
+    var sql = "SELECT A.Ingredients FROM Recipe_Ingredient A WHERE A.Recipe_ID = ?"; 
+     con.query(sql, [req.body.Recipe_ID], (err, res) =>
+     sendPacket(err, res, response)
+   );
+ });
+
+
+
   //ADD
 
-  router.post("/recipes", (req, response) => {
+  router.post("/recipe", (req, response) => {
     var reqBody = req.body;
     const id = reqBody.Recipe_ID;
     const price = reqBody.Price;
@@ -48,7 +58,7 @@ router.get("/recipes", (req, response) => {
     });
 });
 
-//DELETE
+//UPDATE
 
 /*router.post("/recipes", (req, response) => {
     var reqBody = req.body;
@@ -72,3 +82,14 @@ router.get("/recipes", (req, response) => {
         }
     });
 });*/
+
+sendPacket = (err, res, response) => {
+    if (err) {
+      response.status(400);
+      response.send(err);
+    } else {
+      response.send(res);
+    }
+  };
+
+module.exports = router;
