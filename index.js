@@ -10,7 +10,7 @@ app.use(require("./routes/order"));
 // import customer.js
 app.use(require("./routes/customer"));
 
-app.listen(process.env.DB_PORT, () => {
+app.listen(4500, () => {
   //server starts listening for any attempts from a client to connect at port: {port}
-  console.log(`Now listening on port ${process.env.DB_PORT}`);
+  console.log(`Now listening on port 4500`);
 });
