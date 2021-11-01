@@ -9,6 +9,8 @@ app.use(cors());
 app.use(require("./routes/order"));
 // import customer.js
 app.use(require("./routes/customer"));
+// import recipe.js
+app.use(require("./routes/recipe"));
 
 app.listen(4500, () => {
   //server starts listening for any attempts from a client to connect at port: {port}
