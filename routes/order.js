@@ -80,6 +80,16 @@ router.delete("/orders", (req, response) => {
   );
 });
 
+router.post("/orders", (req, response) => {
+  var sql =
+    "INSERT INTO `Order` (Recipe_ID, Date, Completed) \
+    VALUES (?,?,?)";
+
+  con.query(sql, [0, req.body.date, 0], (err, res) =>
+    sendPacket(err, res, response)
+  );
+});
+
 router.post("/complete", (req, response) => {
   var sql = "UPDATE `Order` SET Completed = 1 WHERE Order_ID = ?";
 
