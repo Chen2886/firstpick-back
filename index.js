@@ -9,6 +9,10 @@ app.use(cors());
 app.use(require("./routes/order"));
 // import customer.js
 app.use(require("./routes/customer"));
+// import feedback.js
+app.use(require("./routes/feedback"));
+// import inventory.js
+app.use(require("./routes/inventory"));
 // import recipe.js
 app.use(require("./routes/recipe"));
 
