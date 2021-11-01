@@ -85,7 +85,7 @@ router.post("/orders", (req, response) => {
     "INSERT INTO `Order` (Recipe_ID, Date, Completed) \
     VALUES (?,?,?)";
 
-  con.query(sql, [0, req.body.date, 0], (err, res) =>
+  con.query(sql, [req.body.Recipe_ID, req.body.date, 0], (err, res) =>
     sendPacket(err, res, response)
   );
 });
