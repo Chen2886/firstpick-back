@@ -12,7 +12,7 @@ router.use(express.json());
 //View inventory
 router.get("/inventory", (req, response) => {
     sql =
-    'SELECT `Ingredients` FROM `Recipe_Ingredient`';
+    'SELECT `Ingredient` FROM `Inventory`';
   
     con.query(sql.replace("\n", " "), (err, res) => {
       if (err) {
