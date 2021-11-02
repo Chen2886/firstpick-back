@@ -80,14 +80,18 @@ router.delete("/orders", (req, response) => {
   );
 });
 
-router.post("/orders", (req, response) => {
+router.post("/orders", async (req, response) => {
   var sql =
     "INSERT INTO `Order` (Recipe_ID, Date, Completed) \
     VALUES (?,?,?)";
 
-  con.query(sql, [req.body.Recipe_ID, req.body.date, 0], (err, res) =>
-    sendPacket(err, res, response)
-  );
+  con.query(sql, [req.body.Recipe_ID, req.body.date, 0], (err, res) => {
+    if (req.body.Customer_ID !== undefined) {
+      sql = "INSERT INTO `Order_Customer` (Order_ID, Customer_ID) VALUES (?,?)";
+      con.query(sql, [res.insertId, req.body.Customer_ID]);
+    }
+    sendPacket(err, res, response);
+  });
 });
 
 router.post("/complete", (req, response) => {
