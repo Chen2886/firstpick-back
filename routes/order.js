@@ -71,13 +71,11 @@ router.get("/orders", (req, response) => {
 });
 
 router.delete("/orders", (req, response) => {
-  var sql = "DELETE FROM `Order_Customer` WHERE Order_ID=?";
-  con.query(sql, [req.body.Order_ID]);
-
-  var sql = "DELETE FROM `Order` WHERE Order_ID=?";
-  con.query(sql, [req.body.Order_ID], (err, res) =>
-    sendPacket(err, res, response)
-  );
+  // stored procedure
+  var sql = "CALL deleteOrder(?);";
+  con.query(sql, [req.body.Order_ID], (err, res) => {
+    sendPacket(err, res, response);
+  });
 });
 
 router.post("/orders", async (req, response) => {
