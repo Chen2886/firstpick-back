@@ -10,8 +10,7 @@ router.use(function timeLog(req, res, next) {
 router.use(express.json());
 
 router.get("/orders", (req, response) => {
-  var sql =
-    `SELECT
+  var sql = `SELECT
     o.Order_ID,
     o.Date,
     o.Completed,
@@ -32,21 +31,25 @@ router.get("/orders", (req, response) => {
 });
 
 router.get("/ordersInfo", (req, response) => {
-  var sql =
-    `SELECT
-    o.Order_ID,
-    o.Date,
-    o.Completed,
-    c.First_Name,
-    c.Last_Name, 
-    r.Name, 
-    r.Price 
-  FROM 
-    \`Order\` o 
-    LEFT JOIN \`Order_Customer\` oc ON o.Order_ID = oc.Order_ID 
-    LEFT JOIN \`Customer\` c ON oc.Customer_ID = c.Customer_ID 
-    LEFT JOIN \`Recipe\` r ON o.Recipe_ID = r.Recipe_ID 
-  ORDER BY o.Date`;
+  var sql = `
+  SELECT
+    CONCAT(c.First_Name, " ", c.Last_Name) AS name,
+    COUNT(*) AS num_orders,
+    SUM(r.Price) AS spent
+  FROM
+    \`Order\` o,
+    Order_Customer oc,
+    Customer c,
+    Recipe r
+  WHERE
+    o.Order_ID = oc.Order_ID
+    AND oc.Customer_ID = c.Customer_ID
+    AND o.Recipe_ID = r.Recipe_ID
+  GROUP BY
+    oc.Customer_ID
+  ORDER BY
+    spent DESC;
+  `;
 
   con.query(sql.replace("\n", " "), (err, res) => {
     sendPacket(err, res, response);
