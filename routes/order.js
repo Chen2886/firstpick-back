@@ -16,8 +16,10 @@ router.get("/orders", (req, response) => {
     o.Completed,
     c.First_Name,
     c.Last_Name, 
+    c.Customer_ID,
     r.Name, 
-    r.Price 
+    r.Price,
+    r.Recipe_ID
   FROM 
     \`Order\` o 
     LEFT JOIN \`Order_Customer\` oc ON o.Order_ID = oc.Order_ID 
@@ -77,6 +79,31 @@ router.post("/orders", async (req, response) => {
     }
     sendPacket(err, res, response);
   });
+});
+
+router.put("/orders", async (req, response) => {
+  var sql = "UPDATE `Order` SET Recipe_ID = ?, Date = ? WHERE Order_ID = ?";
+
+  con.query(
+    sql,
+    [req.body.Recipe_ID, req.body.date, req.body.Order_ID],
+    (err, res) => {
+      console.log(req.body.Customer_ID);
+      if (req.body.Customer_ID === null) {
+        sql = "DELETE FROM `Order_Customer` WHERE Order_ID = ?";
+        con.query(sql, [req.body.Order_ID]);
+      } else {
+        sql =
+          "INSERT INTO Order_Customer (Order_ID, Customer_ID) VALUES(?, ?) ON DUPLICATE KEY UPDATE Customer_ID = ?";
+        con.query(sql, [
+          req.body.Order_ID,
+          req.body.Customer_ID,
+          req.body.Customer_ID,
+        ]);
+      }
+      sendPacket(err, res, response);
+    }
+  );
 });
 
 router.post("/complete", (req, response) => {
