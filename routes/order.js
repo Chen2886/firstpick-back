@@ -11,20 +11,42 @@ router.use(express.json());
 
 router.get("/orders", (req, response) => {
   var sql =
-    "SELECT \
-    o.Order_ID, \
-    o.Date, \
-    o.Completed, \
-    c.First_Name, \
-    c.Last_Name, \
-    r.Name, \
-    r.Price \
-  FROM \
-    `Order` o \
-    LEFT JOIN `Order_Customer` oc ON o.Order_ID = oc.Order_ID \
-    LEFT JOIN `Customer` c ON oc.Customer_ID = c.Customer_ID \
-    LEFT JOIN `Recipe` r ON o.Recipe_ID = r.Recipe_ID \
-  ORDER BY o.Date";
+    `SELECT
+    o.Order_ID,
+    o.Date,
+    o.Completed,
+    c.First_Name,
+    c.Last_Name, 
+    r.Name, 
+    r.Price 
+  FROM 
+    \`Order\` o 
+    LEFT JOIN \`Order_Customer\` oc ON o.Order_ID = oc.Order_ID 
+    LEFT JOIN \`Customer\` c ON oc.Customer_ID = c.Customer_ID 
+    LEFT JOIN \`Recipe\` r ON o.Recipe_ID = r.Recipe_ID 
+  ORDER BY o.Date`;
+
+  con.query(sql.replace("\n", " "), (err, res) => {
+    sendPacket(err, res, response);
+  });
+});
+
+router.get("/ordersInfo", (req, response) => {
+  var sql =
+    `SELECT
+    o.Order_ID,
+    o.Date,
+    o.Completed,
+    c.First_Name,
+    c.Last_Name, 
+    r.Name, 
+    r.Price 
+  FROM 
+    \`Order\` o 
+    LEFT JOIN \`Order_Customer\` oc ON o.Order_ID = oc.Order_ID 
+    LEFT JOIN \`Customer\` c ON oc.Customer_ID = c.Customer_ID 
+    LEFT JOIN \`Recipe\` r ON o.Recipe_ID = r.Recipe_ID 
+  ORDER BY o.Date`;
 
   con.query(sql.replace("\n", " "), (err, res) => {
     sendPacket(err, res, response);
