@@ -10,63 +10,52 @@ router.use(function timeLog(req, res, next) {
 router.use(express.json());
 
 router.get("/orders", (req, response) => {
-  var resData = {};
-  var fail = false;
-
-  var sql =
-    "SELECT \
-    o.Order_ID, \
-    o.Date, \
-    o.Completed, \
-    c.First_Name, \
-    c.Last_Name, \
-    r.Name, \
-    r.Price \
-  FROM \
-    `Order` o \
-    LEFT JOIN `Order_Customer` oc ON o.Order_ID = oc.Order_ID \
-    LEFT JOIN `Customer` c ON oc.Customer_ID = c.Customer_ID \
-    LEFT JOIN `Recipe` r ON o.Recipe_ID = r.Recipe_ID \
-  WHERE o.Completed = 1 \
-  ORDER BY o.Date";
+  var sql = `SELECT
+    o.Order_ID,
+    o.Date,
+    o.Completed,
+    c.First_Name,
+    c.Last_Name, 
+    c.Customer_ID,
+    r.Name, 
+    r.Price,
+    r.Recipe_ID
+  FROM 
+    \`Order\` o 
+    LEFT JOIN \`Order_Customer\` oc ON o.Order_ID = oc.Order_ID 
+    LEFT JOIN \`Customer\` c ON oc.Customer_ID = c.Customer_ID 
+    LEFT JOIN \`Recipe\` r ON o.Recipe_ID = r.Recipe_ID 
+  ORDER BY o.Date, r.Price DESC`;
 
   con.query(sql.replace("\n", " "), (err, res) => {
-    if (err) {
-      response.status(400);
-      response.send(err);
-      fail = true;
-    } else {
-      resData.Completed = res;
-    }
+    sendPacket(err, res, response);
   });
+});
 
-  if (fail) return;
-
-  sql =
-    "SELECT \
-      o.Order_ID, \
-      o.Date, \
-      o.Completed, \
-      c.First_Name, \
-      c.Last_Name, \
-      r.Name, \
-      r.Price \
-    FROM \
-      `Order` o \
-      LEFT JOIN `Order_Customer` oc ON o.Order_ID = oc.Order_ID \
-      LEFT JOIN `Customer` c ON oc.Customer_ID = c.Customer_ID \
-      LEFT JOIN `Recipe` r ON o.Recipe_ID = r.Recipe_ID \
-    WHERE o.Completed = 0 \
-    ORDER BY o.Date";
+router.get("/ordersInfo", (req, response) => {
+  var sql = `
+  SELECT
+    CONCAT(c.First_Name, " ", c.Last_Name) AS name,
+    COUNT(*) AS num_orders,
+    SUM(r.Price) AS spent
+  FROM
+    \`Order\` o,
+    Order_Customer oc,
+    Customer c,
+    Recipe r
+  WHERE
+    o.Order_ID = oc.Order_ID
+    AND oc.Customer_ID = c.Customer_ID
+    AND o.Recipe_ID = r.Recipe_ID
+  GROUP BY
+    oc.Customer_ID
+  ORDER BY
+    spent DESC
+  LIMIT 10;
+  `;
 
   con.query(sql.replace("\n", " "), (err, res) => {
-    if (err) {
-      response.status(400);
-      response.send(err);
-    } else {
-      resData.Current = res;
-      response.send(resData);
-    }
+    sendPacket(err, res, response);
   });
 });
 
@@ -90,6 +79,30 @@ router.post("/orders", async (req, response) => {
     }
     sendPacket(err, res, response);
   });
+});
+
+router.put("/orders", async (req, response) => {
+  var sql = "UPDATE `Order` SET Recipe_ID = ?, Date = ? WHERE Order_ID = ?";
+
+  con.query(
+    sql,
+    [req.body.Recipe_ID, req.body.date, req.body.Order_ID],
+    (err, res) => {
+      if (req.body.Customer_ID === null) {
+        sql = "DELETE FROM `Order_Customer` WHERE Order_ID = ?";
+        con.query(sql, [req.body.Order_ID]);
+      } else {
+        sql =
+          "INSERT INTO Order_Customer (Order_ID, Customer_ID) VALUES(?, ?) ON DUPLICATE KEY UPDATE Customer_ID = ?";
+        con.query(sql, [
+          req.body.Order_ID,
+          req.body.Customer_ID,
+          req.body.Customer_ID,
+        ]);
+      }
+      sendPacket(err, res, response);
+    }
+  );
 });
 
 router.post("/complete", (req, response) => {
