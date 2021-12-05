@@ -48,7 +48,8 @@ router.get("/ordersInfo", (req, response) => {
   GROUP BY
     oc.Customer_ID
   ORDER BY
-    spent DESC;
+    spent DESC
+  LIMIT 10;
   `;
 
   con.query(sql.replace("\n", " "), (err, res) => {
