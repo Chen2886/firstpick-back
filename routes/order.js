@@ -88,7 +88,6 @@ router.put("/orders", async (req, response) => {
     sql,
     [req.body.Recipe_ID, req.body.date, req.body.Order_ID],
     (err, res) => {
-      console.log(req.body.Customer_ID);
       if (req.body.Customer_ID === null) {
         sql = "DELETE FROM `Order_Customer` WHERE Order_ID = ?";
         con.query(sql, [req.body.Order_ID]);
