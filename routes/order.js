@@ -25,7 +25,7 @@ router.get("/orders", (req, response) => {
     LEFT JOIN \`Order_Customer\` oc ON o.Order_ID = oc.Order_ID 
     LEFT JOIN \`Customer\` c ON oc.Customer_ID = c.Customer_ID 
     LEFT JOIN \`Recipe\` r ON o.Recipe_ID = r.Recipe_ID 
-  ORDER BY o.Date`;
+  ORDER BY o.Date, r.Price DESC`;
 
   con.query(sql.replace("\n", " "), (err, res) => {
     sendPacket(err, res, response);
