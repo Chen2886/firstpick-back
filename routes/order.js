@@ -105,7 +105,7 @@ router.put("/orders", async (req, response) => {
   );
 });
 
-router.post("/complete", (req, response) => {
+router.post("/complete", (req, response) => { 
   var sql = "UPDATE `Order` SET Completed = 1 WHERE Order_ID = ?";
 
   con.query(sql, [req.body.Order_ID], (err, res) =>
